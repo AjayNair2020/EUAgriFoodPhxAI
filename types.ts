@@ -24,6 +24,15 @@ export interface Agent {
   location: string;
   load: number;
   description: string;
+  health: number; // 0-100
+  tasks: string[];
+  diagnostics: {
+    latency: string;
+    uptime: string;
+    errorRate: string;
+    lastSyncHash: string;
+    firmware: string;
+  };
 }
 
 export interface KPI {
@@ -47,3 +56,23 @@ export interface MaturityLevel {
   description: string;
   score: number;
 }
+
+export type FarmingDomain = 
+  | 'Agriculture' 
+  | 'Plantations' 
+  | 'Animal Husbandry' 
+  | 'Psiculture' 
+  | 'Horticulture' 
+  | 'Floriculture' 
+  | 'Aviculture' 
+  | 'Aquaculture' 
+  | 'Apiculture';
+
+export type FarmingOperation = 
+  | 'Planning' 
+  | 'Equipments/Robotics' 
+  | 'Storage WMS' 
+  | 'Manpower' 
+  | 'Supply-chain' 
+  | 'Delivery Models' 
+  | 'Mobility Fleet';

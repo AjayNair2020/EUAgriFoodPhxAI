@@ -1,35 +1,86 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgriFood AgenticAI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'dark-leaf': '#091a0f',
+              'dark-leaf-panel': '#0f2a1a',
+              'leaf-green': '#10b981',
+            },
+            animation: {
+              'fadeIn': 'fadeIn 0.4s ease-out forwards',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0b;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Theme - Dark Leaf Green */
+        .dark body {
+            background-color: #091a0f;
             color: #e4e4e7;
-            overflow-x: hidden;
         }
+
+        /* Light Theme */
+        .light body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
         .glass-panel {
-            background: rgba(24, 24, 27, 0.7);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(63, 63, 70, 0.4);
+            transition: background-color 0.3s ease, border-color 0.3s ease, width 0.3s ease;
         }
+
+        .dark .glass-panel {
+            background: rgba(15, 42, 26, 0.7);
+            border: 1px solid rgba(45, 85, 60, 0.3);
+        }
+
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(203, 213, 225, 0.5);
+        }
+
         .agent-pulse {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: .5; }
         }
-        .status-online { color: #10b981; }
-        .status-offline { color: #ef4444; }
-        .status-warning { color: #f59e0b; }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 10px;
+        }
     </style>
 <script type="importmap">
 {
@@ -43,7 +94,7 @@
 }
 </script>
 </head>
-<body>
+<body class="overflow-x-hidden">
     <div id="root"></div>
 </body>
 </html>
