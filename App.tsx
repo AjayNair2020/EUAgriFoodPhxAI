@@ -6,6 +6,12 @@ import AgentCard from './components/AgentCard';
 import CoPilotChat from './components/CoPilotChat';
 import MaturityDashboard from './components/MaturityDashboard';
 import CommercialFarming from './components/CommercialFarming';
+import CommercialFarmingDashboard from './components/CommercialFarmingDashboard';
+import ClimateSmartFarm from './components/ClimateSmartFarm';
+import OTControl from './components/OTControl';
+import Intelligence from './components/Intelligence';
+import TopologyMap from './components/TopologyMap';
+import SupplyChainManagement from './components/SupplyChainManagement';
 import { INITIAL_AGENTS, SYSTEM_KPIS } from './constants';
 import { analyzeSupplyChainRisk } from './services/geminiService';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -75,6 +81,18 @@ const App: React.FC = () => {
       if (domainName === 'Animal husbandry') finalName = 'Animal Husbandry';
       
       return <CommercialFarming domain={finalName} />;
+    }
+
+    // Handle Climate Sections
+    if (activeTab.startsWith('climate-')) {
+      const sectionSlug = activeTab.replace('climate-', '');
+      return <ClimateSmartFarm section={sectionSlug} />;
+    }
+
+    // Handle SCM Sections
+    if (activeTab.startsWith('scm-')) {
+      const sectionSlug = activeTab.replace('scm-', '');
+      return <SupplyChainManagement section={sectionSlug} />;
     }
 
     switch (activeTab) {
@@ -148,7 +166,12 @@ const App: React.FC = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Critical Agent Nodes</h3>
-                <button className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline">VIEW TOPOLOGY</button>
+                <button 
+                  onClick={() => setActiveTab('topology')}
+                  className="text-xs text-emerald-600 dark:text-emerald-400 font-bold hover:underline"
+                >
+                  VIEW TOPOLOGY
+                </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {agents.slice(0, 4).map(agent => (
@@ -284,6 +307,14 @@ const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'ot-control':
+        return <OTControl />;
+      case 'intelligence':
+        return <Intelligence />;
+      case 'topology':
+        return <TopologyMap />;
+      case 'supply-chain-mgmt':
+        return <SupplyChainManagement section="raw-produce" />;
       case 'maturity':
         return (
           <div className="space-y-6 animate-fadeIn">
@@ -295,12 +326,14 @@ const App: React.FC = () => {
           </div>
         );
       case 'commercial-farming':
+        return <CommercialFarmingDashboard />;
+      case 'climate-smart':
         return (
           <div className="flex items-center justify-center h-96 text-zinc-500">
             <div className="text-center">
-              <i className="fas fa-tractor text-5xl mb-4 text-emerald-600/50"></i>
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">Commercial Farming Hub</h2>
-              <p className="mt-2">Select a farming domain from the sidebar sub-menu to begin management.</p>
+              <i className="fas fa-cloud-sun-rain text-5xl mb-4 text-cyan-600/50"></i>
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-200">Climate-Smart Command</h2>
+              <p className="mt-2">Select a climate-focused module from the sub-menu to view adaptive analytics.</p>
             </div>
           </div>
         );

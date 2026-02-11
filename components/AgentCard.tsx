@@ -42,11 +42,11 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent }) => {
       <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">{agent.name}</h3>
       <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-4 line-clamp-2 h-8">{agent.description}</p>
       
-      {/* Health & Load Visualization */}
+      {/* Overview Metrics */}
       <div className="space-y-3 mb-4">
         <div>
           <div className="flex justify-between text-[10px] text-zinc-500 mb-1">
-            <span className="font-bold">AGENT HEALTH</span>
+            <span className="font-bold">OVERVIEW HEALTH</span>
             <span>{agent.health}%</span>
           </div>
           <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
@@ -64,13 +64,29 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent }) => {
         </div>
       </div>
 
-      <div className="space-y-2 border-t border-zinc-100 dark:border-zinc-800 pt-3">
+      <div className="space-y-3 border-t border-zinc-100 dark:border-zinc-800 pt-3">
         <div className="flex justify-between text-xs">
           <span className="text-zinc-400 dark:text-zinc-500">TASKS</span>
           <div className="flex flex-wrap justify-end gap-1">
             {agent.tasks.slice(0, 2).map(task => (
               <span key={task} className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded text-[9px] text-zinc-600 dark:text-zinc-400">{task}</span>
             ))}
+          </div>
+        </div>
+
+        {/* Detailed Health Status Bar below Tasks */}
+        <div className="pt-1">
+          <div className="flex justify-between text-[10px] text-zinc-500 mb-1.5 uppercase font-bold tracking-tight">
+            <span>Agent Integrity</span>
+            <span className={agent.health > 90 ? 'text-emerald-500' : agent.health > 70 ? 'text-amber-500' : 'text-rose-500'}>
+              {agent.health}% {agent.health > 90 ? 'Optimal' : agent.health > 70 ? 'Stable' : 'Critical'}
+            </span>
+          </div>
+          <div className="w-full bg-zinc-100 dark:bg-zinc-900 h-2 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-800">
+            <div 
+              className={`h-full ${getHealthColor(agent.health)} transition-all duration-500 shadow-[0_0_8px_rgba(16,185,129,0.2)]`} 
+              style={{ width: `${agent.health}%` }}
+            ></div>
           </div>
         </div>
       </div>

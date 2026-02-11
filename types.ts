@@ -76,3 +76,21 @@ export type FarmingOperation =
   | 'Supply-chain' 
   | 'Delivery Models' 
   | 'Mobility Fleet';
+
+export type ClimateSmartSection = 
+  | 'Data Collection'
+  | 'Analytics'
+  | 'Forecast'
+  | 'Mitigation'
+  | 'Resilience'
+  | 'Finance & Insurance'
+  | 'Diversification';
+
+export type SupplyChainSection =
+  | 'Raw Produce'
+  | 'Processing Units'
+  | 'Packaging'
+  | 'Shipping'
+  | 'Warehouse'
+  | 'Transport'
+  | 'Last-mile Delivery';
