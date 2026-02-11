@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { FarmingDomain, FarmingOperation } from '../types';
+import FleetMap from './FleetMap';
 
 interface CommercialFarmingProps {
   domain: string;
@@ -8,10 +9,18 @@ interface CommercialFarmingProps {
 
 const CommercialFarming: React.FC<CommercialFarmingProps> = ({ domain }) => {
   const [activeOperation, setActiveOperation] = useState<FarmingOperation>('Planning');
+  const [showFleetMap, setShowFleetMap] = useState(false);
 
   const operations: FarmingOperation[] = [
     'Planning', 'Equipments/Robotics', 'Storage WMS', 'Manpower', 
     'Supply-chain', 'Delivery Models', 'Mobility Fleet'
+  ];
+
+  const assetData = [
+    { id: 'TR-9001', name: 'John Deere Autonomous Tractor', type: 'Tractor', status: 'Operational', location: 'North Field Sector 4', nextMaintenance: '2023-11-15', health: 94, icon: 'fa-tractor' },
+    { id: 'DR-4420', name: 'Precision Spraying Drone V2', type: 'Drone', status: 'Active Mission', location: 'East Orchard', nextMaintenance: '2023-10-28', health: 88, icon: 'fa-drone' },
+    { id: 'HV-7700', name: 'Claas Lexion Harvester', type: 'Harvester', status: 'Maintenance', location: 'Main Workshop', nextMaintenance: '2023-10-22', health: 42, icon: 'fa-wheat-awn' },
+    { id: 'DR-4421', name: 'Multi-spectral Survey Drone', type: 'Drone', status: 'Charging', location: 'Hangar B', nextMaintenance: '2023-11-02', health: 99, icon: 'fa-drone' },
   ];
 
   const getIcon = (op: FarmingOperation) => {
@@ -27,7 +36,128 @@ const CommercialFarming: React.FC<CommercialFarmingProps> = ({ domain }) => {
     }
   };
 
+  const renderRoboticsContent = () => {
+    if (showFleetMap) {
+      return (
+        <div className="animate-fadeIn space-y-4">
+          <div className="flex justify-between items-center mb-2">
+            <button 
+              onClick={() => setShowFleetMap(false)}
+              className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center hover:underline"
+            >
+              <i className="fas fa-arrow-left mr-2"></i> BACK TO TABLE VIEW
+            </button>
+          </div>
+          <FleetMap />
+        </div>
+      );
+    }
+
+    return (
+      <div className="animate-fadeIn space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Active Assets', val: '12', sub: 'Total 15', color: 'text-emerald-500' },
+            { label: 'Drone Missions', val: '04', sub: 'Running', color: 'text-blue-500' },
+            { label: 'Field Coverage', val: '82%', sub: 'Target 90%', color: 'text-cyan-500' },
+            { label: 'Maintenance Due', val: '02', sub: 'Critical', color: 'text-rose-500' }
+          ].map((stat, i) => (
+            <div key={i} className="glass-panel p-4 rounded-xl shadow-sm border-l-4 border-transparent hover:border-emerald-500 transition-all">
+              <div className="text-[10px] font-bold text-zinc-500 uppercase">{stat.label}</div>
+              <div className={`text-2xl font-bold ${stat.color}`}>{stat.val}</div>
+              <div className="text-[9px] text-zinc-400 mt-1">{stat.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="glass-panel rounded-2xl shadow-xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
+          <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 flex justify-between items-center">
+            <h3 className="font-bold text-zinc-800 dark:text-white text-sm uppercase tracking-widest flex items-center">
+              <i className="fas fa-microchip mr-2 text-emerald-500"></i>
+              Asset Fleet Tracking
+            </h3>
+            <div className="flex space-x-2">
+               <button className="px-3 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded hover:bg-emerald-500 transition-colors">ADD ASSET</button>
+               <button 
+                onClick={() => setShowFleetMap(true)}
+                className="px-3 py-1 bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-[10px] font-bold rounded hover:bg-emerald-600 hover:text-white transition-all"
+               >
+                 FLEET MAP
+               </button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-[10px] text-zinc-500 uppercase tracking-tighter border-b border-zinc-200 dark:border-zinc-800">
+                  <th className="px-6 py-4 font-bold">Asset Info</th>
+                  <th className="px-6 py-4 font-bold">Status</th>
+                  <th className="px-6 py-4 font-bold">Location</th>
+                  <th className="px-6 py-4 font-bold">Next Maintenance</th>
+                  <th className="px-6 py-4 font-bold">System Health</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                {assetData.map((asset) => (
+                  <tr key={asset.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-emerald-600/10 transition-colors">
+                          <i className={`fas ${asset.icon} text-zinc-400 dark:text-zinc-500 group-hover:text-emerald-500`}></i>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-zinc-900 dark:text-zinc-200">{asset.name}</div>
+                          <div className="text-[9px] font-mono text-zinc-500">{asset.id} • {asset.type}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-2">
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          asset.status === 'Operational' || asset.status === 'Active Mission' ? 'bg-emerald-500' :
+                          asset.status === 'Charging' ? 'bg-amber-500' : 'bg-rose-500'
+                        }`}></span>
+                        <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 uppercase">{asset.status}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-1.5 text-xs text-zinc-500">
+                        <i className="fas fa-location-dot text-[10px] text-zinc-400"></i>
+                        <span>{asset.location}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-zinc-600 dark:text-zinc-300 font-medium">{asset.nextMaintenance}</span>
+                        <span className="text-[9px] text-zinc-500">Scheduled Check</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-1 w-20 h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                          <div className={`h-full ${
+                            asset.health > 90 ? 'bg-emerald-500' :
+                            asset.health > 70 ? 'bg-amber-500' : 'bg-rose-500'
+                          }`} style={{ width: `${asset.health}%` }}></div>
+                        </div>
+                        <span className="text-[10px] font-bold text-zinc-500">{asset.health}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderOperationContent = () => {
+    if (activeOperation === 'Equipments/Robotics') {
+      return renderRoboticsContent();
+    }
+
     return (
       <div className="animate-fadeIn space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -205,7 +335,10 @@ const CommercialFarming: React.FC<CommercialFarmingProps> = ({ domain }) => {
         {operations.map((op) => (
           <button
             key={op}
-            onClick={() => setActiveOperation(op)}
+            onClick={() => {
+              setActiveOperation(op);
+              if (op !== 'Equipments/Robotics') setShowFleetMap(false);
+            }}
             className={`flex items-center space-x-2 px-4 py-3 rounded-xl border whitespace-nowrap transition-all ${
               activeOperation === op
                 ? 'bg-emerald-600/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/20'

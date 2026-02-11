@@ -12,6 +12,8 @@ import OTControl from './components/OTControl';
 import Intelligence from './components/Intelligence';
 import TopologyMap from './components/TopologyMap';
 import SupplyChainManagement from './components/SupplyChainManagement';
+import SupplyChainPlanning from './components/SupplyChainPlanning';
+import OverviewMap from './components/OverviewMap';
 import { INITIAL_AGENTS, SYSTEM_KPIS } from './constants';
 import { analyzeSupplyChainRisk } from './services/geminiService';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -117,6 +119,18 @@ const App: React.FC = () => {
               ))}
             </div>
 
+            {/* Strategic Overview Map */}
+            <div className="space-y-4">
+               <div className="flex justify-between items-center px-1">
+                 <h3 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center">
+                   <i className="fas fa-map-location-dot mr-2 text-emerald-600"></i>
+                   AgriFood Operational Mesh
+                 </h3>
+                 <span className="text-[10px] text-zinc-500 font-mono">Source-to-Shelf Visualization</span>
+               </div>
+               <OverviewMap />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 glass-panel p-6 rounded-xl h-[400px] shadow-sm">
                 <div className="flex justify-between items-center mb-6">
@@ -206,107 +220,7 @@ const App: React.FC = () => {
           </div>
         );
       case 'supplychain':
-        return (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="flex justify-between items-end">
-              <div>
-                <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">Supply-Chain Planning</h2>
-                <p className="text-zinc-500 dark:text-zinc-400">Agentic path optimization and multi-modal logistics control.</p>
-              </div>
-              <div className="flex space-x-3">
-                <button 
-                  onClick={handleRunRiskAnalysis}
-                  disabled={isAnalyzing}
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-xs font-bold border border-zinc-700 flex items-center transition-all"
-                >
-                  <i className={`fas ${isAnalyzing ? 'fa-spinner fa-spin' : 'fa-shield-virus'} mr-2`}></i> 
-                  {isAnalyzing ? 'Analyzing Risks...' : 'Run Risk Assessment'}
-                </button>
-                <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg transition-all">
-                  Optimize All Paths
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="glass-panel rounded-xl overflow-hidden shadow-sm aspect-video bg-zinc-900 relative">
-                  <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #10b981 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="bg-zinc-950/80 backdrop-blur text-[10px] text-emerald-500 px-2 py-1 rounded border border-emerald-500/30 font-mono">LIVE_TOPOLOGY_LAYER_04</span>
-                  </div>
-                  
-                  {/* Simulated Map Content */}
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="relative w-3/4 h-3/4">
-                       <div className="absolute top-10 left-10 w-8 h-8 bg-emerald-500/20 rounded-full border border-emerald-500 flex items-center justify-center animate-pulse">
-                         <i className="fas fa-warehouse text-[10px] text-emerald-500"></i>
-                       </div>
-                       <div className="absolute top-1/2 left-1/4 w-0.5 h-20 bg-gradient-to-b from-emerald-500 to-transparent"></div>
-                       <div className="absolute top-1/2 right-10 w-8 h-8 bg-blue-500/20 rounded-full border border-blue-500 flex items-center justify-center">
-                         <i className="fas fa-truck text-[10px] text-blue-500"></i>
-                       </div>
-                       <div className="absolute bottom-10 left-1/2 w-8 h-8 bg-amber-500/20 rounded-full border border-amber-500 flex items-center justify-center">
-                         <i className="fas fa-industry text-[10px] text-amber-500"></i>
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-4 right-4 flex space-x-2">
-                    <div className="glass-panel px-3 py-1 rounded text-[10px] font-bold text-zinc-400">ZOOM: 1.4x</div>
-                    <div className="glass-panel px-3 py-1 rounded text-[10px] font-bold text-emerald-500">SYNC: 12ms</div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  {[
-                    { label: 'Active Fleets', val: '42', icon: 'fa-truck-moving', color: 'text-blue-500' },
-                    { label: 'Cold Storage', val: '98%', icon: 'fa-snowflake', color: 'text-cyan-500' },
-                    { label: 'Estimated Arrival', val: '14.2h', icon: 'fa-clock', color: 'text-amber-500' }
-                  ].map(stat => (
-                    <div key={stat.label} className="glass-panel p-4 rounded-xl shadow-sm">
-                      <div className="flex items-center space-x-3">
-                        <i className={`fas ${stat.icon} ${stat.color}`}></i>
-                        <div>
-                          <div className="text-[10px] text-zinc-500 uppercase font-bold">{stat.label}</div>
-                          <div className="text-xl font-bold text-zinc-900 dark:text-white">{stat.val}</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:col-span-1 space-y-6">
-                <div className="glass-panel rounded-xl h-full flex flex-col shadow-sm min-h-[500px]">
-                  <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
-                    <h3 className="font-bold text-sm text-zinc-800 dark:text-zinc-200 uppercase tracking-wider">AI Risk Intelligence</h3>
-                  </div>
-                  <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                    {riskReport ? (
-                      riskReport.risks.map((risk, i) => (
-                        <div key={i} className="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700 animate-fadeIn">
-                          <div className="flex justify-between items-start mb-2">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                              risk.severity === 'High' ? 'bg-rose-500/20 text-rose-500' : 'bg-amber-500/20 text-amber-500'
-                            }`}>{risk.severity} Severity</span>
-                          </div>
-                          <h4 className="font-bold text-zinc-900 dark:text-white text-sm">{risk.title}</h4>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">{risk.recommendation}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                        <i className="fas fa-shield-alt text-4xl text-zinc-300 dark:text-zinc-700 mb-4"></i>
-                        <p className="text-sm text-zinc-500">Run risk assessment to generate agentic insights for the current supply path.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return <SupplyChainPlanning />;
       case 'ot-control':
         return <OTControl />;
       case 'intelligence':

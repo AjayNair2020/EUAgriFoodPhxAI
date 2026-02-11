@@ -3,6 +3,7 @@
   "description": "A distributed and federated AI-agent system for the AgriFood supply chain, managing sensing, identification, OT control, and process maturity.",
   "requestFramePermissions": [
     "camera",
-    "microphone"
+    "microphone",
+    "geolocation"
   ]
 }

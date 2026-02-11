@@ -12,14 +12,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
   const [isFarmingOpen, setIsFarmingOpen] = useState(false);
   const [isClimateOpen, setIsClimateOpen] = useState(false);
   const [isSCMOpen, setIsSCMOpen] = useState(false);
+  const [isGovernanceOpen, setIsGovernanceOpen] = useState(false);
 
   const menuItems = [
     { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview' },
     { id: 'agents', icon: 'fa-robot', label: 'Agents' },
     { id: 'supplychain', icon: 'fa-truck-ramp-box', label: 'Planning' },
     { id: 'ot-control', icon: 'fa-industry', label: 'OT Control' },
-    { id: 'maturity', icon: 'fa-stairs', label: 'Maturity' },
-    { id: 'intelligence', icon: 'fa-brain', label: 'Intelligence' }
   ];
 
   const farmingSubItems = [
@@ -42,6 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
     setIsFarmingOpen(!isFarmingOpen);
     setIsClimateOpen(false);
     setIsSCMOpen(false);
+    setIsGovernanceOpen(false);
     setActiveTab('commercial-farming');
   };
 
@@ -50,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
     setIsClimateOpen(!isClimateOpen);
     setIsFarmingOpen(false);
     setIsSCMOpen(false);
+    setIsGovernanceOpen(false);
     setActiveTab('climate-smart');
   };
 
@@ -58,7 +59,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
     setIsSCMOpen(!isSCMOpen);
     setIsFarmingOpen(false);
     setIsClimateOpen(false);
+    setIsGovernanceOpen(false);
     setActiveTab('supply-chain-mgmt');
+  };
+
+  const handleGovernanceClick = () => {
+    if (isCollapsed) setIsCollapsed(false);
+    setIsGovernanceOpen(!isGovernanceOpen);
+    setIsFarmingOpen(false);
+    setIsClimateOpen(false);
+    setIsSCMOpen(false);
   };
 
   return (
@@ -82,6 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
               setIsFarmingOpen(false);
               setIsClimateOpen(false);
               setIsSCMOpen(false);
+              setIsGovernanceOpen(false);
             }}
             className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3 px-4'} py-3 rounded-lg transition-all ${
               activeTab === item.id 
@@ -208,6 +219,52 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
                   {sub}
                 </button>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* AgriFood Governance Menu Item */}
+        <div className="pt-2">
+          <button
+            onClick={handleGovernanceClick}
+            className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3 px-4'} py-3 rounded-lg transition-all ${
+              activeTab === 'maturity' || activeTab === 'intelligence'
+                ? 'bg-purple-600/20 text-purple-600 dark:text-purple-400 border border-purple-600/30' 
+                : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+            title={isCollapsed ? "AgriFood Governance" : ""}
+          >
+            <i className="fas fa-shield-halved w-5 text-center"></i>
+            {!isCollapsed && (
+              <div className="flex-1 flex justify-between items-center">
+                <span className="font-medium whitespace-nowrap">AgriFood Governance</span>
+                <i className={`fas fa-chevron-${isGovernanceOpen ? 'up' : 'down'} text-[10px]`}></i>
+              </div>
+            )}
+          </button>
+
+          {!isCollapsed && isGovernanceOpen && (
+            <div className="mt-1 ml-4 space-y-1 border-l border-zinc-200 dark:border-zinc-800 pl-4">
+              <button
+                onClick={() => setActiveTab('maturity')}
+                className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all ${
+                  activeTab === 'maturity'
+                    ? 'text-purple-600 dark:text-purple-400 font-bold bg-purple-600/10'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
+                }`}
+              >
+                Maturity
+              </button>
+              <button
+                onClick={() => setActiveTab('intelligence')}
+                className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all ${
+                  activeTab === 'intelligence'
+                    ? 'text-purple-600 dark:text-purple-400 font-bold bg-purple-600/10'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
+                }`}
+              >
+                Intelligence
+              </button>
             </div>
           )}
         </div>
