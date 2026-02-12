@@ -94,3 +94,20 @@ export type SupplyChainSection =
   | 'Warehouse'
   | 'Transport'
   | 'Last-mile Delivery';
+
+// --- RACI RBAC Types ---
+export enum RACILevel {
+  ACCOUNTABLE = 'A', // Super Admin / Owner - Final decision authority
+  RESPONSIBLE = 'R', // Operator / Manager - Executes tasks
+  CONSULTED = 'C',   // Analyst / SME - Providing input
+  INFORMED = 'I'     // Viewer / Auditor - Kept up-to-date
+}
+
+export interface User {
+  email: string;
+  name: string;
+  role: string;
+  raciLevel: RACILevel;
+  isSuperAdmin: boolean;
+  avatar?: string;
+}

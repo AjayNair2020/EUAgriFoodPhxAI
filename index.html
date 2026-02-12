@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriFood AgenticAI System</title>
+    <title>EU AgriFood PhysicalAI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -16,14 +16,24 @@
               'dark-leaf': '#091a0f',
               'dark-leaf-panel': '#0f2a1a',
               'leaf-green': '#10b981',
+              'light-leaf': '#f0fdf4',
+              'sage-green': '#dcfce7',
+              'forest-dark': '#062d14',
+              'eu-blue': '#003399',
             },
             animation: {
               'fadeIn': 'fadeIn 0.4s ease-out forwards',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
                 '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
               }
             }
           }
@@ -31,7 +41,7 @@
       }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
@@ -63,15 +73,6 @@
         .light .glass-panel {
             background: rgba(255, 255, 255, 0.7);
             border: 1px solid rgba(203, 213, 225, 0.5);
-        }
-
-        .agent-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
         }
 
         .scrollbar-thin::-webkit-scrollbar {
