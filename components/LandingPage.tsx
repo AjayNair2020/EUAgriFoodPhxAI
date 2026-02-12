@@ -9,6 +9,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [isHoveringRaci, setIsHoveringRaci] = useState<string | null>(null);
 
+  const keyFeatures = [
+    { title: 'Physical Sense', icon: 'fa-satellite-dish', kpi: '99.8%', label: 'Connectivity', desc: 'Real-time telemetry from 1,242 edge nodes.', color: 'text-leaf-green' },
+    { title: 'Agentic Identify', icon: 'fa-brain-circuit', kpi: '96.4%', label: 'Accuracy', desc: 'Federated reasoning for crop identification.', color: 'text-leaf-green' },
+    { title: 'Sovereign Plan', icon: 'fa-truck-ramp-box', kpi: '94.2%', label: 'Yield Gain', desc: 'OT-integrated supply chain optimization.', color: 'text-leaf-green' },
+    { title: 'Governance Hub', icon: 'fa-scale-balanced', kpi: '100%', label: 'GDPR Compliant', desc: 'Sovereign RACI-based decision audit mesh.', color: 'text-leaf-green' },
+  ];
+
   const raciData = [
     { level: 'A', title: 'Accountable', desc: 'Executive Authority & Final Sign-off', color: 'text-rose-600', bg: 'bg-rose-100' },
     { level: 'R', title: 'Responsible', desc: 'Operational Execution & Implementation', color: 'text-leaf-green', bg: 'bg-green-100' },
@@ -33,10 +40,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
       {/* Subtle Grid Overlay */}
       <div className="absolute inset-0 opacity-[0.4] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#10b981 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}></div>
 
-      {/* Left Section: Branding & RACI Info */}
-      <div className="flex-1 flex flex-col justify-center px-8 lg:px-24 py-12 z-10 relative">
-        <div className="mb-12">
-          <div className="flex items-center space-x-3 mb-8 animate-fadeIn">
+      {/* Left Section: Branding & Features */}
+      <div className="flex-1 flex flex-col justify-center px-8 lg:px-24 py-12 z-10 relative overflow-y-auto scrollbar-thin">
+        <div className="mb-10">
+          <div className="flex items-center space-x-3 mb-6 animate-fadeIn">
             <div className="w-14 h-14 bg-leaf-green rounded-2xl flex items-center justify-center shadow-lg shadow-leaf-green/30">
               <i className="fas fa-leaf text-white text-2xl"></i>
             </div>
@@ -50,59 +57,81 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
             </div>
           </div>
           
-          <h1 className="text-6xl lg:text-8xl font-[900] text-forest-dark tracking-tighter leading-[0.9] mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-6xl lg:text-7xl font-[900] text-forest-dark tracking-tighter leading-[0.9] mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
             EU AgriFood <br />
             <span className="text-leaf-green drop-shadow-sm">PhysicalAI</span>
           </h1>
-          <p className="text-zinc-600 text-xl max-w-xl leading-relaxed font-medium animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          <p className="text-zinc-600 text-lg max-w-xl leading-relaxed font-medium animate-fadeIn mb-10" style={{ animationDelay: '0.2s' }}>
             The distributed backbone for European precision agriculture. 
             Harnessing physical agents with federated intelligence and high-fidelity OT coordination.
           </p>
         </div>
 
-        {/* RACI Governance Info with Light Tones */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
-          {raciData.map((item) => (
-            <div 
-              key={item.level}
-              onMouseEnter={() => setIsHoveringRaci(item.level)}
-              onMouseLeave={() => setIsHoveringRaci(null)}
-              className={`p-6 rounded-[32px] border transition-all duration-500 shadow-sm ${
-                isHoveringRaci === item.level 
-                  ? 'border-leaf-green bg-white scale-[1.02] shadow-xl shadow-leaf-green/5' 
-                  : 'border-zinc-100 bg-white/60 hover:border-zinc-200'
-              }`}
-            >
-              <div className="flex items-center space-x-4 mb-3">
-                <span className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shadow-inner ${item.bg} ${item.color}`}>
-                  {item.level}
-                </span>
-                <h3 className="text-forest-dark font-extrabold text-sm tracking-tight">{item.title}</h3>
+        {/* Feature & KPI Tiles - Removed glass-panel to ensure no dark background overrides */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+          {keyFeatures.map((f, i) => (
+            <div key={i} className="bg-emerald-50/60 backdrop-blur-md p-5 rounded-[28px] border border-leaf-green/20 shadow-sm flex items-start space-x-4 hover:shadow-lg hover:border-leaf-green/40 transition-all group">
+              <div className={`w-12 h-12 rounded-2xl bg-white ${f.color} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                <i className={`fas ${f.icon} text-lg`}></i>
               </div>
-              <p className="text-xs text-zinc-500 font-medium leading-relaxed">{item.desc}</p>
+              <div>
+                <div className="flex items-center justify-between mb-0.5">
+                  <h3 className="text-forest-dark font-black text-[11px] uppercase tracking-wider">{f.title}</h3>
+                  <div className={`text-xs font-black ${f.color}`}>{f.kpi}</div>
+                </div>
+                <div className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest mb-1">{f.label}</div>
+                <p className="text-[10px] text-zinc-500 leading-tight font-medium">{f.desc}</p>
+              </div>
             </div>
           ))}
         </div>
+
+        <div className="mb-4">
+          <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] mb-4 pl-1">Governance Architecture</h4>
+          {/* RACI Governance Info with Light Tones */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            {raciData.map((item) => (
+              <div 
+                key={item.level}
+                onMouseEnter={() => setIsHoveringRaci(item.level)}
+                onMouseLeave={() => setIsHoveringRaci(null)}
+                className={`p-4 rounded-[24px] border transition-all duration-500 shadow-sm ${
+                  isHoveringRaci === item.level 
+                    ? 'border-leaf-green bg-white scale-[1.05] z-10 shadow-lg' 
+                    : 'border-zinc-100 bg-white/40'
+                }`}
+              >
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] shadow-inner ${item.bg} ${item.color}`}>
+                    {item.level}
+                  </span>
+                  <h3 className="text-forest-dark font-black text-[9px] uppercase tracking-tighter">{item.title}</h3>
+                </div>
+                <p className="text-[8px] text-zinc-500 font-bold leading-tight uppercase opacity-60">{item.desc.split(' & ')[0]}</p>
+              </div>
+            ))}
+          </div>
+        </div>
         
-        <div className="mt-16 flex items-center space-x-8 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+        <div className="mt-10 flex items-center space-x-8 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
           <div className="flex -space-x-4">
             {[1,2,3,4,5].map(i => (
-              <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-white shadow-md ring-1 ring-leaf-green/10">
+              <div key={i} className="w-10 h-10 rounded-full border-4 border-white overflow-hidden bg-white shadow-md ring-1 ring-leaf-green/10">
                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=agentNode${i}`} alt="agent" />
               </div>
             ))}
           </div>
           <div className="w-px h-10 bg-zinc-200"></div>
           <div>
-            <div className="text-lg font-black text-forest-dark leading-none">1,242 Nodes</div>
-            <div className="text-[10px] text-leaf-green font-bold uppercase tracking-widest mt-1">Active Federated Mesh</div>
+            <div className="text-lg font-black text-forest-dark leading-none">1,242 Active Nodes</div>
+            <div className="text-[10px] text-leaf-green font-bold uppercase tracking-widest mt-1">Sovereign Data Fabric</div>
           </div>
         </div>
       </div>
 
       {/* Right Section: Crisp Light Login Gateway */}
       <div className="lg:w-[540px] flex flex-col justify-center items-center px-8 py-12 z-20 relative">
-        <div className="w-full max-w-sm bg-white/90 backdrop-blur-3xl p-10 rounded-[56px] border border-white shadow-[0_32px_64px_-16px_rgba(16,185,129,0.15)] ring-1 ring-leaf-green/5">
+        <div className="w-full max-sm bg-white/90 backdrop-blur-3xl p-10 rounded-[56px] border border-white shadow-[0_32px_64px_-16px_rgba(16,185,129,0.15)] ring-1 ring-leaf-green/5">
           <div className="text-center mb-10">
             <div className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 border border-leaf-green/20 text-[10px] font-black text-leaf-green mb-6 uppercase tracking-[0.25em]">
               Sovereign Entry
@@ -157,9 +186,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                   className="w-full bg-zinc-50 border border-zinc-100 rounded-[28px] pl-12 pr-6 py-4.5 text-zinc-900 focus:bg-white focus:border-leaf-green/50 focus:ring-4 focus:ring-leaf-green/5 outline-none transition-all placeholder:text-zinc-300 font-bold text-sm"
                 />
               </div>
-              <p className="text-[10px] text-zinc-400 mt-4 italic text-center font-medium">
-                Admin Entry: <span className="text-leaf-green font-bold select-all">ajaybinduarti@gmail.com</span>
-              </p>
             </div>
             
             <button 

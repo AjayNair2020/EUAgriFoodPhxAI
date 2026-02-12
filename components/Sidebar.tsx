@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import { RACILevel, User } from '../types';
 
+interface SubMenuItem {
+  id: string;
+  label: string;
+}
+
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -20,15 +25,23 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
 
   const menuItems = [
     { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED, RACILevel.INFORMED] },
-    { id: 'agents', icon: 'fa-robot', label: 'Agents', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'intelligence', icon: 'fa-brain-circuit', label: 'Agentic Intelligence', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'governance', icon: 'fa-scale-balanced', label: 'AgriFood Governance', level: [RACILevel.ACCOUNTABLE, RACILevel.CONSULTED] },
-    { id: 'maturity', icon: 'fa-stairs', label: 'Maturity', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
     { id: 'ot-control', icon: 'fa-industry', label: 'OT Control', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
     { id: 'supplychain', icon: 'fa-truck-ramp-box', label: 'Planning', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
   ];
 
   const subMenus = [
+    { 
+      id: 'governance', 
+      icon: 'fa-scale-balanced', 
+      label: 'AgriFood Governance', 
+      items: [
+        { id: 'governance', label: 'Governance Overview' },
+        { id: 'agents', label: 'Agents' },
+        { id: 'intelligence', label: 'Agentic Intelligence' },
+        { id: 'maturity', label: 'Maturity' }
+      ], 
+      level: [RACILevel.ACCOUNTABLE, RACILevel.CONSULTED] 
+    },
     { id: 'farming', icon: 'fa-tractor', label: 'Farming', items: ['Agriculture', 'Plantations', 'Horticulture'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
     { id: 'climate', icon: 'fa-cloud-sun-rain', label: 'Climate-Smart', items: ['Data Collection', 'Analytics', 'Forecast'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
     { id: 'scm', icon: 'fa-boxes-packing', label: 'Supply Chain', items: ['Raw Produce', 'Processing Units', 'Warehouse'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
@@ -65,35 +78,53 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
 
         <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-4"></div>
 
-        {subMenus.filter(sub => checkAccess(sub.level)).map((sub) => (
-          <div key={sub.id}>
-            <button
-              onClick={() => toggleSub(sub.id)}
-              className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3 px-4'} py-3 rounded-xl text-zinc-500 hover:bg-leaf-green/5 hover:text-leaf-green transition-all`}
-            >
-              <i className={`fas ${sub.icon} w-5 text-center`}></i>
-              {!isCollapsed && (
-                <div className="flex-1 flex justify-between items-center">
-                  <span className="font-extrabold text-[10px] uppercase tracking-widest">{sub.label}</span>
-                  <i className={`fas fa-chevron-${openSub === sub.id ? 'up' : 'down'} text-[8px]`}></i>
+        {subMenus.filter(sub => checkAccess(sub.level)).map((sub) => {
+          const isGroupActive = typeof sub.items[0] === 'string' 
+            ? activeTab.startsWith(sub.id) 
+            : sub.items.some((item: any) => item.id === activeTab);
+
+          return (
+            <div key={sub.id}>
+              <button
+                onClick={() => toggleSub(sub.id)}
+                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3 px-4'} py-3 rounded-xl transition-all ${
+                  isGroupActive && !openSub && openSub !== sub.id
+                    ? 'text-leaf-green bg-leaf-green/5' 
+                    : 'text-zinc-500 hover:bg-leaf-green/5 hover:text-leaf-green'
+                }`}
+              >
+                <i className={`fas ${sub.icon} w-5 text-center`}></i>
+                {!isCollapsed && (
+                  <div className="flex-1 flex justify-between items-center">
+                    <span className="font-extrabold text-[10px] uppercase tracking-widest">{sub.label}</span>
+                    <i className={`fas fa-chevron-${openSub === sub.id ? 'up' : 'down'} text-[8px]`}></i>
+                  </div>
+                )}
+              </button>
+              {!isCollapsed && openSub === sub.id && (
+                <div className="ml-5 pl-4 border-l-2 border-leaf-green/20 space-y-1 mt-1">
+                  {sub.items.map((item: any) => {
+                    const isString = typeof item === 'string';
+                    const itemId = isString ? `${sub.id}-${item.toLowerCase().replace(' ', '-')}` : item.id;
+                    const itemLabel = isString ? item : item.label;
+
+                    return (
+                      <button 
+                        key={itemId}
+                        onClick={() => setActiveTab(itemId)}
+                        className={`w-full text-left py-2 text-[10px] font-bold uppercase tracking-tight transition-colors ${
+                          activeTab === itemId ? 'text-leaf-green' : 'text-zinc-500 hover:text-leaf-green'
+                        }`}
+                      >
+                        {itemLabel}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
-            </button>
-            {!isCollapsed && openSub === sub.id && (
-              <div className="ml-5 pl-4 border-l-2 border-leaf-green/20 space-y-1 mt-1">
-                {sub.items.map(item => (
-                  <button 
-                    key={item}
-                    onClick={() => setActiveTab(`${sub.id}-${item.toLowerCase().replace(' ', '-')}`)}
-                    className="w-full text-left py-2 text-[10px] text-zinc-500 hover:text-leaf-green font-bold uppercase tracking-tight transition-colors"
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
 
         {currentUser?.isSuperAdmin && (
           <div className="pt-4 mt-4 border-t border-rose-500/20">
