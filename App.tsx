@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import RightPanel from './components/RightPanel';
@@ -17,13 +16,15 @@ import OverviewMap from './components/OverviewMap';
 import AdminPanel from './components/AdminPanel';
 import LandingPage from './components/LandingPage';
 import GovernanceDashboard from './components/GovernanceDashboard';
+import UrbanInfrastructure from './components/UrbanInfrastructure';
+import CoastalManagement from './components/CoastalManagement';
 import { INITIAL_AGENTS, SYSTEM_KPIS } from './constants';
-import { RACILevel, User } from './types';
+import { RACILevel, User, AgentStatus } from './types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [agents] = useState(INITIAL_AGENTS);
+  const [agents, setAgents] = useState(INITIAL_AGENTS);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -66,6 +67,19 @@ const App: React.FC = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
     setActiveTab('dashboard');
+  };
+
+  const handleTaskCreated = (agentId: string, taskDescription: string) => {
+    setAgents(prev => prev.map(agent => 
+      agent.id === agentId 
+        ? { 
+            ...agent, 
+            tasks: [...agent.tasks, taskDescription],
+            status: AgentStatus.PROCESSING,
+            load: Math.min(agent.load + 15, 100)
+          } 
+        : agent
+    ));
   };
 
   // Simulated chart data
@@ -134,11 +148,17 @@ const App: React.FC = () => {
                 </ResponsiveContainer>
               </div>
               <div className="lg:col-span-1">
-                <CoPilotChat systemContext={{ kpis: SYSTEM_KPIS, user: currentUser }} agents={agents} />
+                <CoPilotChat 
+                  systemContext={{ kpis: SYSTEM_KPIS, user: currentUser }} 
+                  agents={agents} 
+                  onTaskCreated={handleTaskCreated}
+                />
               </div>
             </div>
           </div>
         );
+      case 'urban': return <UrbanInfrastructure />;
+      case 'coastal': return <CoastalManagement />;
       case 'agents': return <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">{agents.map(a => <AgentCard key={a.id} agent={a} />)}</div>;
       case 'intelligence': return <Intelligence />;
       case 'governance': return <GovernanceDashboard />;

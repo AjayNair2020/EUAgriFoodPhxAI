@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { RACILevel, User } from '../types';
 
@@ -25,6 +24,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
 
   const menuItems = [
     { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED, RACILevel.INFORMED] },
+    { id: 'urban', icon: 'fa-city', label: 'Urban Infra', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
+    { id: 'coastal', icon: 'fa-water', label: 'Coastal Zone', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
     { id: 'ot-control', icon: 'fa-industry', label: 'OT Control', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
     { id: 'supplychain', icon: 'fa-truck-ramp-box', label: 'Planning', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
   ];
@@ -33,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
     { 
       id: 'governance', 
       icon: 'fa-scale-balanced', 
-      label: 'AgriFood Governance', 
+      label: 'AI Governance', 
       items: [
         { id: 'governance', label: 'Governance Overview' },
         { id: 'agents', label: 'Agents' },
@@ -44,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
     },
     { id: 'farming', icon: 'fa-tractor', label: 'Farming', items: ['Agriculture', 'Plantations', 'Horticulture'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
     { id: 'climate', icon: 'fa-cloud-sun-rain', label: 'Climate-Smart', items: ['Data Collection', 'Analytics', 'Forecast'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'scm', icon: 'fa-boxes-packing', label: 'Supply Chain', items: ['Raw Produce', 'Processing Units', 'Warehouse'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
+    { id: 'scm', icon: 'fa-boxes-packing', label: 'Supply Chain', items: ['Raw Produce', 'Processing Units', 'Packaging'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
   ];
 
   const checkAccess = (levels: RACILevel[]) => {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface LandingPageProps {
@@ -45,25 +44,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
         <div className="mb-10">
           <div className="flex items-center space-x-3 mb-6 animate-fadeIn">
             <div className="w-14 h-14 bg-leaf-green rounded-2xl flex items-center justify-center shadow-lg shadow-leaf-green/30">
-              <i className="fas fa-leaf text-white text-2xl"></i>
+              <i className="fas fa-microchip-ai text-white text-2xl"></i>
             </div>
             <div className="w-px h-10 bg-zinc-200"></div>
             <div>
               <div className="flex items-center space-x-1 text-leaf-green font-black text-xs tracking-[0.2em] uppercase">
-                <i className="fas fa-star text-[8px] animate-spin-slow mr-1"></i>
+                <i className="fas fa-atom text-[8px] animate-spin-slow mr-1"></i>
                 <span>EU Federated</span>
               </div>
-              <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Sovereign Agri-Node</div>
+              <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Sovereign Physical-Node</div>
             </div>
           </div>
           
-          <h1 className="text-6xl lg:text-7xl font-[900] text-forest-dark tracking-tighter leading-[0.9] mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-            EU AgriFood <br />
-            <span className="text-leaf-green drop-shadow-sm">PhysicalAI</span>
+          <h1 className="text-5xl lg:text-6xl font-[900] text-forest-dark tracking-tighter leading-[0.9] mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+            EU Quantum AgenticAI <br />
+            <span className="text-leaf-green drop-shadow-sm">Network for PhysicalAI</span>
           </h1>
           <p className="text-zinc-600 text-lg max-w-xl leading-relaxed font-medium animate-fadeIn mb-10" style={{ animationDelay: '0.2s' }}>
-            The distributed backbone for European precision agriculture. 
-            Harnessing physical agents with federated intelligence and high-fidelity OT coordination.
+            The distributed QAN backbone for European precision agriculture, Urban Infrastructure and Coastal zone management. 
+            Harnessing physical AgentiAI and Surrogate Quantum compute with federated OT and IT intelligence and high-fidelity 
+            optimization, coordination and orchestration.
           </p>
         </div>
 
