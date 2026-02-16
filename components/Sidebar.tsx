@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import { RACILevel, User } from '../types';
-
-interface SubMenuItem {
-  id: string;
-  label: string;
-}
+import { RACILevel, User, MenuPermissions } from '../types';
 
 interface SidebarProps {
   activeTab: string;
@@ -12,9 +7,10 @@ interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
   currentUser: User | null;
+  menuPermissions: MenuPermissions;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, currentUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, currentUser, menuPermissions }) => {
   const [openSub, setOpenSub] = useState<string | null>(null);
 
   const toggleSub = (sub: string) => {
@@ -23,14 +19,38 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
   };
 
   const menuItems = [
-    { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED, RACILevel.INFORMED] },
-    { id: 'urban', icon: 'fa-city', label: 'Urban Infra', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'coastal', icon: 'fa-water', label: 'Coastal Zone', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'ot-control', icon: 'fa-industry', label: 'OT Control', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
-    { id: 'supplychain', icon: 'fa-truck-ramp-box', label: 'Planning', level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
+    { id: 'dashboard', icon: 'fa-chart-pie', label: 'Overview' },
+    { id: 'ot-control', icon: 'fa-industry', label: 'OT Control' },
   ];
 
   const subMenus = [
+    {
+      id: 'urban',
+      icon: 'fa-city',
+      label: 'Urban Infra',
+      items: [
+        { id: 'urban', label: 'Urban Overview' },
+        'Transportation',
+        'Water Supply',
+        'Wastewater',
+        'Stormwater',
+        'Energy',
+        'Healthcare',
+        'Education',
+        'Environment Quality',
+        'Resilience',
+        'Waste Circularity Mgt',
+        'Sustainability'
+      ]
+    },
+    {
+      id: 'coastal',
+      icon: 'fa-water',
+      label: 'Coastal Zone',
+      items: [
+        { id: 'coastal', label: 'Coastal Overview' }
+      ]
+    },
     { 
       id: 'governance', 
       icon: 'fa-scale-balanced', 
@@ -40,17 +60,29 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
         { id: 'agents', label: 'Agents' },
         { id: 'intelligence', label: 'Agentic Intelligence' },
         { id: 'maturity', label: 'Maturity' }
-      ], 
-      level: [RACILevel.ACCOUNTABLE, RACILevel.CONSULTED] 
+      ]
     },
-    { id: 'farming', icon: 'fa-tractor', label: 'Farming', items: ['Agriculture', 'Plantations', 'Horticulture'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE] },
-    { id: 'climate', icon: 'fa-cloud-sun-rain', label: 'Climate-Smart', items: ['Data Collection', 'Analytics', 'Forecast'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
-    { id: 'scm', icon: 'fa-boxes-packing', label: 'Supply Chain', items: ['Raw Produce', 'Processing Units', 'Packaging'], level: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED] },
+    { 
+      id: 'farming', 
+      icon: 'fa-tractor', 
+      label: 'Farming', 
+      items: [
+        { id: 'supplychain', label: 'Planning' },
+        'Agriculture', 
+        'Plantations', 
+        'Horticulture',
+        { id: 'scm-raw-produce', label: 'Raw Produce' },
+        { id: 'scm-processing-units', label: 'Processing Units' },
+        { id: 'scm-packaging', label: 'Packaging' }
+      ] 
+    },
+    { id: 'climate', icon: 'fa-cloud-sun-rain', label: 'Climate-Smart', items: ['Data Collection', 'Analytics', 'Forecast'] },
   ];
 
-  const checkAccess = (levels: RACILevel[]) => {
+  const checkAccess = (menuId: string) => {
     if (!currentUser) return false;
-    return levels.includes(currentUser.raciLevel);
+    const allowedLevels = menuPermissions[menuId] || [];
+    return allowedLevels.includes(currentUser.raciLevel);
   };
 
   return (
@@ -62,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
       </div>
 
       <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto scrollbar-thin">
-        {menuItems.filter(item => checkAccess(item.level)).map((item) => (
+        {menuItems.filter(item => checkAccess(item.id)).map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
@@ -79,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
 
         <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-4"></div>
 
-        {subMenus.filter(sub => checkAccess(sub.level)).map((sub) => {
+        {subMenus.filter(sub => checkAccess(sub.id)).map((sub) => {
           const isGroupActive = typeof sub.items[0] === 'string' 
             ? activeTab.startsWith(sub.id) 
             : sub.items.some((item: any) => item.id === activeTab);
@@ -106,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
                 <div className="ml-5 pl-4 border-l-2 border-leaf-green/20 space-y-1 mt-1">
                   {sub.items.map((item: any) => {
                     const isString = typeof item === 'string';
-                    const itemId = isString ? `${sub.id}-${item.toLowerCase().replace(' ', '-')}` : item.id;
+                    const itemId = isString ? `${sub.id}-${item.toLowerCase().replace(/ /g, '-')}` : item.id;
                     const itemLabel = isString ? item : item.label;
 
                     return (
@@ -153,7 +185,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isCollapsed,
             </div>
             <div className="text-[10px] text-forest-dark dark:text-zinc-400 font-bold leading-tight">
               {currentUser?.raciLevel === RACILevel.ACCOUNTABLE ? 'Full Authority' : 
-               currentUser?.raciLevel === RACILevel.RESPONSIBLE ? 'Task Execution' : 'Consultative Access'}
+               currentUser?.raciLevel === RACILevel.RESPONSIBLE ? 'Task Execution' : 
+               currentUser?.raciLevel === RACILevel.CONSULTED ? 'Consultative Access' : 'Informed Stakeholder'}
             </div>
           </div>
         </div>

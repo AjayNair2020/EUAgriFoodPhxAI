@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { RACILevel } from '../types';
 
@@ -25,7 +24,7 @@ const GovernanceDashboard: React.FC = () => {
             <i className="fas fa-scale-balanced text-2xl"></i>
           </div>
           <div>
-            <h2 className="text-3xl font-[900] text-forest-dark dark:text-white tracking-tighter">AgriFood Governance Mesh</h2>
+            <h2 className="text-3xl font-[900] text-forest-dark dark:text-white tracking-tighter">QAN MultiPhysics Governance Mesh</h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-1 font-medium">Sovereign policy enforcement and RACI framework orchestration.</p>
           </div>
         </div>

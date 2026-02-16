@@ -17,14 +17,36 @@ import AdminPanel from './components/AdminPanel';
 import LandingPage from './components/LandingPage';
 import GovernanceDashboard from './components/GovernanceDashboard';
 import UrbanInfrastructure from './components/UrbanInfrastructure';
+import UrbanInfraDetail from './components/UrbanInfraDetail';
 import CoastalManagement from './components/CoastalManagement';
 import { INITIAL_AGENTS, SYSTEM_KPIS } from './constants';
-import { RACILevel, User, AgentStatus } from './types';
+import { RACILevel, User, AgentStatus, MenuPermissions } from './types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const INITIAL_USERS: User[] = [
+  { email: 'ajaybinduarti@gmail.com', name: 'Ajay Bindu Arti', role: 'Principal System Architect', raciLevel: RACILevel.ACCOUNTABLE, isSuperAdmin: true, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=ajaybinduarti@gmail.com` },
+  { email: 'operator.01@agrifood.io', name: 'Mark Wilson', role: 'Edge Operator', raciLevel: RACILevel.RESPONSIBLE, isSuperAdmin: false, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=mark` },
+  { email: 'analyst.global@agrifood.io', name: 'Sarah Chen', role: 'Agri-Analyst', raciLevel: RACILevel.CONSULTED, isSuperAdmin: false, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=sarah` },
+  { email: 'viewer.hq@agrifood.io', name: 'John Doe', role: 'Executive Viewer', raciLevel: RACILevel.INFORMED, isSuperAdmin: false, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=john` },
+];
+
+const INITIAL_MENU_PERMISSIONS: MenuPermissions = {
+  dashboard: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED, RACILevel.INFORMED],
+  urban: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+  coastal: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+  'ot-control': [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE],
+  supplychain: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+  governance: [RACILevel.ACCOUNTABLE, RACILevel.CONSULTED],
+  farming: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+  climate: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+  scm: [RACILevel.ACCOUNTABLE, RACILevel.RESPONSIBLE, RACILevel.CONSULTED],
+};
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [agents, setAgents] = useState(INITIAL_AGENTS);
+  const [users, setUsers] = useState<User[]>(INITIAL_USERS);
+  const [menuPermissions, setMenuPermissions] = useState<MenuPermissions>(INITIAL_MENU_PERMISSIONS);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -50,6 +72,14 @@ const App: React.FC = () => {
   };
 
   const handleLogin = (email: string) => {
+    const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (existingUser) {
+      setCurrentUser(existingUser);
+      setIsLoggedIn(true);
+      return;
+    }
+
+    // Default for new users
     const isSuper = email.toLowerCase() === 'ajaybinduarti@gmail.com';
     const user: User = {
       email,
@@ -59,6 +89,7 @@ const App: React.FC = () => {
       isSuperAdmin: isSuper,
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
     };
+    setUsers(prev => [...prev, user]);
     setCurrentUser(user);
     setIsLoggedIn(true);
   };
@@ -67,6 +98,28 @@ const App: React.FC = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
     setActiveTab('dashboard');
+  };
+
+  // --- Admin Functions ---
+  const handleUpdateUserRaci = (email: string, level: RACILevel) => {
+    if (!currentUser?.isSuperAdmin) return;
+    setUsers(prev => prev.map(u => u.email === email ? { ...u, raciLevel: level } : u));
+    if (currentUser.email === email) {
+      setCurrentUser(prev => prev ? { ...prev, raciLevel: level } : null);
+    }
+  };
+
+  const handleUpdateMenuPermission = (menuId: string, level: RACILevel, allowed: boolean) => {
+    if (!currentUser?.isSuperAdmin) return;
+    setMenuPermissions(prev => {
+      const currentLevels = prev[menuId] || [];
+      if (allowed && !currentLevels.includes(level)) {
+        return { ...prev, [menuId]: [...currentLevels, level] };
+      } else if (!allowed && currentLevels.includes(level)) {
+        return { ...prev, [menuId]: currentLevels.filter(l => l !== level) };
+      }
+      return prev;
+    });
   };
 
   const handleTaskCreated = (agentId: string, taskDescription: string) => {
@@ -113,6 +166,15 @@ const App: React.FC = () => {
     if (activeTab.startsWith('scm-')) {
       const sectionSlug = activeTab.replace('scm-', '');
       return <SupplyChainManagement section={sectionSlug} />;
+    }
+
+    if (activeTab.startsWith('urban-')) {
+      const subTab = activeTab.replace('urban-', '');
+      return <UrbanInfraDetail category={subTab} />;
+    }
+
+    if (activeTab.startsWith('coastal-')) {
+      return <CoastalManagement />;
     }
 
     switch (activeTab) {
@@ -165,7 +227,15 @@ const App: React.FC = () => {
       case 'maturity': return <MaturityDashboard />;
       case 'ot-control': return <OTControl />;
       case 'supplychain': return <SupplyChainPlanning />;
-      case 'admin': return <AdminPanel currentUser={currentUser!} />;
+      case 'admin': return (
+        <AdminPanel 
+          currentUser={currentUser!} 
+          users={users} 
+          onUpdateRaci={handleUpdateUserRaci}
+          menuPermissions={menuPermissions}
+          onUpdateMenuPermission={handleUpdateMenuPermission}
+        />
+      );
       default: return <div className="text-center p-20 text-zinc-500">Feature provisioned in next federated update.</div>;
     }
   };
@@ -180,10 +250,10 @@ const App: React.FC = () => {
       <header className="fixed top-0 left-0 right-0 h-16 glass-panel border-b z-50 px-6 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
-            <i className="fas fa-leaf text-white text-xl"></i>
+            <i className="fas fa-atom text-white text-xl animate-spin-slow"></i>
           </div>
           <div className="hidden sm:block">
-            <h1 className="font-bold text-zinc-900 dark:text-white leading-none text-sm tracking-tight">EU AgriFood</h1>
+            <h1 className="font-bold text-zinc-900 dark:text-white leading-none text-sm tracking-tight">EU QAN MultiPhysicsAI</h1>
             <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">PhysicalAI Federated Mesh</span>
           </div>
         </div>
@@ -245,6 +315,7 @@ const App: React.FC = () => {
         isCollapsed={isSidebarCollapsed}
         setIsCollapsed={setIsSidebarCollapsed}
         currentUser={currentUser}
+        menuPermissions={menuPermissions}
       />
 
       {/* Main Content Area */}

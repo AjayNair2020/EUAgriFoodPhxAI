@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { SupplyChainSection } from '../types';
 
@@ -129,7 +128,7 @@ const SupplyChainManagement: React.FC<SCMProps> = ({ section }) => {
           <div>
             <h2 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Supply-Chain Management</h2>
             <div className="flex items-center space-x-2 mt-1">
-               <span className="text-zinc-500 dark:text-zinc-400 text-xs">End-to-End AgriFood Lifecycle Solutions</span>
+               <span className="text-zinc-500 dark:text-zinc-400 text-xs">End-to-End lifecycle Solutions</span>
                <span className="text-blue-500 text-[10px] font-bold bg-blue-500/10 px-1.5 rounded uppercase">Verified</span>
             </div>
           </div>
@@ -199,7 +198,7 @@ const SupplyChainManagement: React.FC<SCMProps> = ({ section }) => {
                        <span>{stat.label}</span>
                        <span className="text-blue-500">{stat.val}%</span>
                      </div>
-                     <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1 rounded-full overflow-hidden">
+                     <div className="w-full bg-zinc-100 dark:bg-zinc-900 h-1 rounded-full overflow-hidden">
                        <div className="h-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" style={{ width: `${stat.val}%` }}></div>
                      </div>
                    </div>

@@ -11,7 +11,7 @@ interface CoPilotChatProps {
 const CoPilotChat: React.FC<CoPilotChatProps> = ({ systemContext, agents, onTaskCreated }) => {
   const user = systemContext.user as User;
   const [messages, setMessages] = useState<{role: 'user' | 'ai' | 'system', text: string}[]>([
-    { role: 'ai', text: `AgriFood Agentic CoPilot active. Access Level: [${user?.raciLevel || 'I'}]. I have initialized visibility for ${user?.name}. How can I assist with the Federated Mesh?` }
+    { role: 'ai', text: `EU QAN MultiPhysicsAI CoPilot active. Access Level: [${user?.raciLevel || 'I'}]. I have initialized visibility for ${user?.name}. How can I assist with the Federated Mesh?` }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +123,7 @@ const CoPilotChat: React.FC<CoPilotChatProps> = ({ systemContext, agents, onTask
       <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
         <div className="flex items-center space-x-3">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <h3 className="font-bold text-emerald-400 uppercase tracking-wider text-xs">Agentic CoPilot</h3>
+          <h3 className="font-bold text-emerald-400 uppercase tracking-wider text-xs">EU QAN CoPilot</h3>
         </div>
         <div className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-emerald-500/20">
           LEVEL: {user?.raciLevel}

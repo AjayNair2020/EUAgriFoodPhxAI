@@ -111,3 +111,7 @@ export interface User {
   isSuperAdmin: boolean;
   avatar?: string;
 }
+
+export interface MenuPermissions {
+  [menuId: string]: RACILevel[];
+}

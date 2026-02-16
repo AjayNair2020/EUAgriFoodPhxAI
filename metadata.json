@@ -1,5 +1,5 @@
 {
-  "name": "EU AgriFood PhysicalAI",
+  "name": "EU QAN MultiPhysicsAI",
   "description": "European Federated Physical AI system for sensing, identification, and supply-chain planning, secured by RACI governance.",
   "requestFramePermissions": [
     "camera",
